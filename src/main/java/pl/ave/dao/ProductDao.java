@@ -9,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Queue;
 
 @Repository
 @Transactional
@@ -31,16 +30,27 @@ public class ProductDao {
     }
 
     public List<Product> getAll() {
-        final String getAll = "SELECT p FROM Product p";
-        TypedQuery<Product> getAllQuery = entityManager.createQuery(getAll, Product.class);
+        TypedQuery<Product> getAllQuery = entityManager.createNamedQuery("Product.findAll", Product.class);
         List<Product> resultList = getAllQuery.getResultList();
         return resultList;
     }
 
     public void deleteALl(){
-        final String deleteAll = "DELETE FROM Product p";
-        Query deleteAllQuery = entityManager.createQuery(deleteAll);
+        Query deleteAllQuery = entityManager.createNamedQuery("Product.deleteAll");
         deleteAllQuery.executeUpdate();
+    }
+
+    public List<Product> getByName(String name){
+        TypedQuery<Product> query = entityManager.createNamedQuery("Product.findByName", Product.class);
+        query.setParameter("name", name);
+        List<Product> resultList = query.getResultList();
+        return resultList;
+    }
+
+    public void  deleteByProducer(String name){
+        Query query = entityManager.createQuery("DELETE FROM Product p WHERE p.producer = :producer");
+        query.setParameter("producer", name);
+        query.executeUpdate();
     }
 
     public List<Product> customGet(String jpqlQuery){

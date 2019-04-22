@@ -25,24 +25,13 @@ public class SpringJpaQueriesDynamicApplication {
         ProductDao productDao = ctx.getBean(ProductDao.class);
         products.forEach(productDao::save);
 
-        System.out.println("All products:");
-        List<Product> allProducts = productDao.getAll();
-        allProducts.forEach(System.out::println);
+        productDao.deleteByProducer("Radian");
+        System.out.println("Products without Radian:");
+        productDao.getAll().forEach(System.out::println);
 
-        System.out.println("Products more expensive than 100");
-        List<Product> expensiveProducts = productDao.customGet("SELECT p FROM Product p WHERE p.price > 100");
-        expensiveProducts.forEach(System.out::println);
-
-        System.out.println("All products ordered by price");
-        List<Product> productsByPrice = productDao.customGet("SELECT p FROM Product p ORDER BY p.price ASC");
-        productsByPrice.forEach(System.out::println);
-
-        System.out.println("Expensive Radian Procuts");
-        List<Product> expensiveRadianProducts = productDao.customGet
-                ("SELECT p FROM Product p WHERE p.producer = 'Radian' AND p.price > 2000");
-        expensiveRadianProducts.forEach(System.out::println);
-
-        productDao.deleteALl();
+        System.out.println("Opiekacze: ");
+        List<Product> productByName = productDao.getByName("Opiekacz");
+        System.out.println(productByName);
 
         ctx.close();
     }
